@@ -549,9 +549,13 @@ function tenseView(t,m){ // devuelve filas [persona, html, texto]
     else if(t.id==='ineg'){const [pf]=split(f),[,core]=split(f);const e=A.rg.sp[i];const cl=A.cls.ineg[i];const [,b0]=split(base[i]);const pre=pf?`<span class="pr">${esc(pf)}</span>`:'';html=cl==='irr'?pre+`<span class="irr">${esc(core)}</span>`:cl==='orto'?pre+`<span class="orto">${esc(core)}</span>`:pre+esc(core)}
     else html=cell(f,base[i],exp[i],A.cls[t.id][i],true);
     rows.push({p:t.imp?(i===1?'tú':i===2?'usted':i===3?'nosotros':i===4?'vosotros':'ustedes'):PERS_SHORT[i],html,text:f,idx:i,def:!defOK(t.id,t.imp?i:i,!!t.imp)});
-    if(state.vos&&t.vos&&i===1){
-      if(t.id==='pres'){const v=vosPres(m.ind.presente[4]);rows.push({p:'vos',html:`<span class="vos">${esc(v)}</span>`,text:v,vos:true})}
-      if(t.id==='iaf'){const v=vosImp(state.inf,state.refl);rows.push({p:'vos',html:`<span class="vos">${esc(v)}</span>`,text:v,vos:true})}
+    if(state.vos&&i===1){
+      let v;
+      if(t.id==='pres')v=vosPres(m.ind.presente[4]);
+      else if(t.id==='iaf')v=vosImp(state.inf,state.refl);
+      else if(t.id==='spres'||t.id==='ineg'){const [pf,core]=split(f);const alt=/[áéíóú]/.test(core)?'':accentLast(core.slice(0,-1))+'s';v=f+(alt?' / '+pf+alt:'')}
+      else v=f;
+      rows.push({p:'vos',html:`<span class="vos">${esc(v)}</span>`,text:v,vos:true,def:!defOK(t.id,i,!!t.imp)});
     }
   });
   return rows;
